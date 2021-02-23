@@ -1,13 +1,10 @@
 import os
 import torch
 import argparse
-from PIL import Image
 from torch.autograd import Variable
 import torchvision.utils as vutils
-import torchvision.datasets as datasets
 from Loader import Dataset
 from util import *
-import scipy.misc
 import time
 
 parser = argparse.ArgumentParser(description='WCT Pytorch')
@@ -46,7 +43,6 @@ loader = torch.utils.data.DataLoader(dataset=dataset,
 
 wct = WCT(args)
 def styleTransfer(contentImg,styleImg,imname,csF):
-
     sF5 = wct.e5(styleImg)
     cF5 = wct.e5(contentImg)
     sF5 = sF5.data.cpu().squeeze(0)
@@ -101,8 +97,11 @@ for i,(contentImg,styleImg,imname) in enumerate(loader):
     if (args.cuda):
         contentImg = contentImg.cuda(args.gpu)
         styleImg = styleImg.cuda(args.gpu)
-    cImg = Variable(contentImg,volatile=True)
-    sImg = Variable(styleImg,volatile=True)
+    # cImg = Variable(contentImg,volatile=True)
+    # sImg = Variable(styleImg,volatile=True)
+    with torch.no_grad():
+      cImg = Variable(contentImg)
+      sImg = Variable(styleImg)
     start_time = time.time()
     # WCT Style Transfer
     styleTransfer(cImg,sImg,imname,csF)

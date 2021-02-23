@@ -90,5 +90,7 @@ class WCT(nn.Module):
         targetFeature = targetFeature.view_as(cF)
         ccsF = alpha * targetFeature + (1.0 - alpha) * cF
         ccsF = ccsF.float().unsqueeze(0)
-        csF.data.resize_(ccsF.size()).copy_(ccsF)
+        # csF.data.resize_(ccsF.size()).copy_(ccsF)
+        with torch.no_grad():
+          csF.resize_(ccsF.size()).copy_(ccsF)
         return csF
